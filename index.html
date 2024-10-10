@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traveller</title>
+     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Didot&display=swap');
+
+        .traveller-title {
+            font-family: 'Didot', serif;
+        }
+        .traveller-title {
+    font-family: 'Didot', serif;
+    font-size: 55px; 
+}
+
+    
+        body {
+            font-family: 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #eaeaea;
+        }
+         #confirmation-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border: 1px solid #ccc;
+            padding: 20px;
+            z-index: 1000;
+           }
+
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        } 
+            #apply-button {
+            background-color: #4CAF50; 
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        #apply-button:hover {
+            background-color: #45a049;
+        }
+        header {
+            background: #2c3e50;
+            color: #ffffff;
+            padding: 20px; 
+            box-sizing: border-box; 
+            text-align: center;
+        }
+        section {
+            padding: 20px;
+            margin: 10px;
+            background: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            background: #2c3e50;
+            color: #ffffff;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: inherit;
+        }
+        .results {
+            border: 1px solid #ccc;
+            max-height: 150px;
+            overflow-y: auto;
+            display: none;
+        }
+        .results div {
+            padding: 10px;
+            cursor: pointer;
+        }
+        .results div:hover {
+            background: #f0f0f0;
+        }
+        .previous-visa-fields {
+            display: none;
+        }
+        .schengen-fields {
+            display: none;
+        }
+        button {  
+            background-color: #2980b9; 
+            color: #ffffff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-family: inherit;
+        }
+        button:hover {
+            background-color: #3498db; 
+        }
+        .popup {
+    display: none; 
+    position: fixed; 
+    z-index: 1; 
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0, 0, 0, 0.5); 
+}
+
+.popup-content {
+    background-color: white;
+    margin: 15% auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; 
+    text-align: center; 
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+.modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            position: relative;
+            background-color: #fefefe;
+            margin: 15% auto; 
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            text-align: center; 
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        @media (max-width: 768px) {
+            .traveller-title {
+                font-size: 30px; 
+            }
+
+            h3 {
+                font-size: 20px; 
+            }
+
+            img {
+                width: 50px; 
+            }
+        }
+
+        @media (max-width: 480px) {
+            .traveller-title {
+                font-size: 24px; 
+            }
+
+            h3 {
+                font-size: 18px;
+            }
+
+            img {
+                width: 40px; 
+            }
+        }
+        h2 {
+            display: flex;
+            align-items: center;
+        }
+
+        h2 i {
+            margin-right: 10px; 
+        }
+        img {
+            width: 100%; 
+            max-width: 600px; 
+            height: auto; 
+        }
+    </style>
+</head>
+<body>
+   <header style="display: flex; align-items: center;">
+    <img src="traveller logo.png" alt="Logo" style="width: 150px; height: auto; margin-right: 15px;">
+    <div style="flex-grow: 1; text-align: center;">
+        <h1 class="traveller-title">Traveller</h1>
+        <h3>Your Travel Companion</h3>
+    </div>
+</header>
+
+
+
+   <section>
+    <h2><i class="fas fa-plane"></i>Flights</h2>
+    <label for="departure-search">Departure Airport:</label>
+    <input type="text" id="departure-search" placeholder="Search for departure airport...">
+    <div id="departure-results" class="results"></div>
+
+    <label for="destination-search">Destination Airport:</label>
+    <input type="text" id="destination-search" placeholder="Search for destination airport...">
+    <div id="destination-results" class="results"></div>
+
+    <label for="adults">Number of Adults:</label>
+    <input type="number" id="adults" min="1" value="1">
+
+    <label for="children">Number of Children:</label>
+    <input type="number" id="children" min="0" value="0">
+    
+    <button type="Search">Search</button>
+    <div id="searching-message" style="display: none;">Searching...</div> 
+</section>
+<div id="planeModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <img src="plane going.gif" alt="Plane Moving">
+            <p>Searching for flights...</p>
+        </div>
+    </div>
+
+    <section>
+        <h2>Visas</h2>
+        <label for="country-select">Select Country:</label>
+        <select id="country-select">
+            <option value="">--Select Country--</option>
+            <option value="USA">USA</option>
+            <option value="Canada">Canada</option>
+            <option value="Mexico">Mexico</option>
+            <option value="Brazil">Brazil</option>
+            <option value="Argentina">Argentina</option>
+            <option value="United Kingdom">United Kingdom</option>
+            <option value="France">France</option>
+            <option value="Germany">Germany</option>
+            <option value="Italy">Italy</option>
+            <option value="Spain">Spain</option>
+            <option value="Australia">Australia</option>
+            <option value="New Zealand">New Zealand</option>
+            <option value="India">India</option>
+            <option value="China">China</option>
+            <option value="Japan">Japan</option>
+            <option value="South Korea">South Korea</option>
+            <option value="Singapore">Singapore</option>
+            <option value="South Africa">South Africa</option>
+            <option value="Nigeria">Nigeria</option>
+            <option value="Kenya">Kenya</option>
+            <option value="Russia">Russia</option>
+            <option value="Egypt">Egypt</option>
+            <option value="Saudi Arabia">Saudi Arabia</option>
+            <option value="United Arab Emirates">United Arab Emirates</option>
+            <option value="Turkey">Turkey</option>
+            <option value="Iran">Iran</option>
+            <option value="Iraq">Iraq</option>
+            <option value="Kuwait">Kuwait</option>
+            <option value="Qatar">Qatar</option>
+            <option value="Oman">Oman</option>
+            <option value="Bahrain">Bahrain</option>
+            <option value="Jordan">Jordan</option>
+            <option value="Syria">Syria</option>
+            <option value="Lebanon">Lebanon</option>
+            <option value="Palestine">Palestine</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Armenia">Armenia</option>
+            <option value="Azerbaijan">Azerbaijan</option>
+            <option value="Cyprus">Cyprus</option>
+            <option value="Malta">Malta</option>
+            <option value="Greece">Greece</option>
+            <option value="Serbia">Serbia</option>
+            <option value="Montenegro">Montenegro</option>
+            <option value="Bosnia and Herzegovina">Bosnia and Herzegovina</option>
+            <option value="North Macedonia">North Macedonia</option>
+            <option value="Albania">Albania</option>
+            <option value="Hungary">Hungary</option>
+            <option value="Slovenia">Slovenia</option>
+            <option value="Croatia">Croatia</option>
+            <option value="Austria">Austria</option>
+            <option value="Switzerland">Switzerland</option>
+            <option value="Czech Republic">Czech Republic</option>
+            <option value="Poland">Poland</option>
+            <option value="Slovakia">Slovakia</option>
+            <option value="Belgium">Belgium</option>
+            <option value="Netherlands">Netherlands</option>
+            <option value="Luxembourg">Luxembourg</option>
+            <option value="France">France</option>
+            <option value="Germany">Germany</option>
+            <option value="Denmark">Denmark</option>
+            <option value="Sweden">Sweden</option>
+            <option value="Norway">Norway</option>
+            <option value="Finland">Finland</option>
+            <option value="Iceland">Iceland</option>
+            <option value="Estonia">Estonia</option>
+            <option value="Latvia">Latvia</option>
+            <option value="Lithuania">Lithuania</option>
+            <option value="United Kingdom">United Kingdom</option>
+            <option value="Ireland">Ireland</option>
+            <option value="Russia">Russia</option>
+            <option value="Ukraine">Ukraine</option>
+            <option value="Moldova">Moldova</option>
+            <option value="Belarus">Belarus</option>
+            <option value="Kazakhstan">Kazakhstan</option>
+            <option value="Uzbekistan">Uzbekistan</option>
+            <option value="Kyrgyzstan">Kyrgyzstan</option>
+            <option value="Tajikistan">Tajikistan</option>
+            <option value="Turkmenistan">Turkmenistan</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Armenia">Armenia</option>
+            <option value="Azerbaijan">Azerbaijan</option>
+        </select>
+        <label for="visa-type">Visa Type:</label>
+        <select id="visa-type">
+            <option value="tourist">Tourist Visa</option>
+            <option value="business">Business Visa</option>
+            <option value="schengen">Schengen Visa</option>
+        </select>
+
+        <div id="visa-cost"></div>
+
+        <label for="document-type">Travel Document Type:</label>
+        <select id="document-type">
+            <option value="passport">Passport</option>
+            <option value="travel-document">Travel Document</option>
+        </select>
+
+        <label for="document-number">Travel Document Number:</label>
+        <input type="text" id="document-number" placeholder="Enter your document number">
+
+        <label for="previous-visa">Previous Visa History:</label>
+        <select id="previous-visa">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+        </select>
+
+        <div id="previous-visa-fields" class="previous-visa-fields">
+            <label for="visa-country">Visa Country:</label>
+            <input type="text" id="visa-country" placeholder="Enter the country of previous visa">
+
+            <label for="visa-number">Visa Number:</label>
+            <input type="text" id="visa-number" placeholder="Enter your visa number">
+
+            <label for="visa-expiry">Visa Expiry Date:</label>
+            <input type="date" id="visa-expiry">
+        </div>
+
+        <div id="schengen-fields" class="schengen-fields">
+            <label for="arrival-country">Arrival Country for Schengen Visa:</label>
+            <input type="text" id="arrival-country" placeholder="Enter your arrival country">
+        </div>
+         <button id="apply-button">Apply</button> 
+        <div id="confirmation-popup">
+            <p>Application done!</p>
+            <button id="close-popup">Close</button>
+        </div>
+        <div id="overlay"></div>
+    </section>
+
+    <section>
+        <h2>Payments</h2>
+        <label for="card-number">Card Number:</label>
+        <input type="text" id="card-number" placeholder="Enter your card number" maxlength="19" required>
+
+        <label for="expiry-date">Expiry Date:</label>
+        <input type="month" id="expiry-date" required>
+
+        <label for="cvv">CVV:</label>
+        <input type="text" id="cvv" placeholder="Enter CVV" maxlength="3" required>
+        <button id="payment-button">Proceed to Payment</button> 
+    </section>
+    <div id="thank-you-popup" class="popup">
+    <div class="popup-content">
+        <span class="close-button" id="close-popup">&times;</span>
+        <h2>Thank You for Choosing Us!</h2>
+        <p>Your payment has been received successfully.</p>
+    </div>
+</div>
+
+<section id="hotelService" style="text-align: center; margin: 40px 0;">
+    <h2>Hotel Service</h2>
+    <p>Our hotel service is coming soon!</p>
+    <p>Stay tuned for updates!</p>
+</section>
+
+   <footer style="background-color: #000; color: #fff; text-align: center; padding: 20px; margin-top: 20px;">
+        <p>&copy; 2024 Traveller. All Rights Reserved to C&F.</p>
+        <p>Contact Us: </p>
+        <p>Email: <a href="mailto:info@travelservice.com" style="color: #fff;">info@traveller.com</a></p>
+        <p>Phone: +88011111</p>
+        <p>Address: 123, Dhaka, Bangladesh</p>
+        <p><a href="#" id="aboutUsLink" style="color: #fff; text-decoration: underline;">About Us</a></p>
+    </footer>
+    <div id="aboutUsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h2>About Us</h2>
+            <p>Traveller is a sister concern of C&F Company. Our main motto is to make your travel easier and hassle-free.</p>
+        </div>
+    </div>
+
+<script>
+     const airports = [
+        { code: 'JFK', city: 'New York', name: 'John F. Kennedy International Airport' },
+        { code: 'LAX', city: 'Los Angeles', name: 'Los Angeles International Airport' },
+        { code: 'ORD', city: 'Chicago', name: 'O\'Hare International Airport' },
+        { code: 'YYZ', city: 'Toronto', name: 'Toronto Pearson International Airport' },
+        { code: 'YUL', city: 'Montreal', name: 'Montréal-Pierre Elliott Trudeau International Airport' },
+        { code: 'MEX', city: 'Mexico City', name: 'Aeropuerto Internacional Benito Juárez' },
+        { code: 'SFO', city: 'San Francisco', name: 'San Francisco International Airport' },
+        { code: 'SYD', city: 'Sydney', name: 'Sydney Airport' },
+        { code: 'LHR', city: 'London', name: 'Heathrow Airport' },
+        { code: 'CDG', city: 'Paris', name: 'Charles de Gaulle Airport' },
+        { code: 'HKG', city: 'Hong Kong', name: 'Hong Kong International Airport' },
+        { code: 'DXB', city: 'Dubai', name: 'Dubai International Airport' },
+        { code: 'SIN', city: 'Singapore', name: 'Singapore Changi Airport' },
+        { code: 'DAC', city: 'Dhaka', name: 'Hazrat Shahjalal International Airport' },
+        { code: 'ZYL', city: 'Sylhet', name: 'Osmani International Airport' },
+        { code: 'CGP', city: 'Chittagong', name: 'Shah Amanat International Airport' },
+        { code: 'ISB', city: 'Islamabad', name: 'Islamabad International Airport' },
+        { code: 'KHI', city: 'Karachi', name: 'Jinnah International Airport' },
+        { code: 'KBL', city: 'Kabul', name: 'Hamid Karzai International Airport' },
+        { code: 'LHE', city: 'Lahore', name: 'Allama Iqbal International Airport' },
+        { code: 'AUH', city: 'Abu Dhabi', name: 'Abu Dhabi International Airport' },
+        { code: 'IKA', city: 'Tehran', name: 'Tehran Imam Khomeini International Airport' },
+        { code: 'KTM', city: 'Kathmandu', name: 'Tribhuvan International Airport' },
+        { code: 'BJS', city: 'Beijing', name: 'Beijing Capital International Airport' },
+        { code: 'CAN', city: 'Guangzhou', name: 'Guangzhou Baiyun International Airport' },
+        { code: 'TYO', city: 'Tokyo', name: 'Tokyo International Airport' },
+        { code: 'SVO', city: 'Moscow', name: 'Sheremetyevo International Airport' },
+        { code: 'FCO', city: 'Rome', name: 'Leonardo da Vinci International Airport' },
+        { code: 'BCN', city: 'Barcelona', name: 'Barcelona-El Prat Airport' },
+        { code: 'WAW', city: 'Warsaw', name: 'Warsaw Chopin Airport' },
+        { code: 'CCU', city: 'Kolkata', name: 'Netaji Subhas Chandra Bose International Airport' },
+        { code: 'DEL', city: 'New Delhi', name: 'Indira Gandhi International Airport' },
+        { code: 'BOM', city: 'Mumbai', name: 'Chhatrapati Shivaji Maharaj International Airport' },
+        { code: 'MAA', city: 'Chennai', name: 'Chennai International Airport' },
+        { code: 'AMM', city: 'Amman', name: 'Queen Alia International Airport' },
+        { code: 'DMM', city: 'Dammam', name: 'King Fahd International Airport' },
+        { code: 'RUH', city: 'Riyadh', name: 'King Khalid International Airport' },
+        { code: 'MCT', city: 'Muscat', name: 'Muscat International Airport' },
+        { code: 'KWI', city: 'Kuwait City', name: 'Kuwait International Airport' },
+        { code: 'DOH', city: 'Doha', name: 'Hamad International Airport' },
+        { code: 'BAH', city: 'Manama', name: 'Bahrain International Airport' },
+        { code: 'LIS', city: 'Lisbon', name: 'Lisbon Portela Airport' },
+        { code: 'OSL', city: 'Oslo', name: 'Oslo Gardermoen Airport' },
+        { code: 'CPH', city: 'Copenhagen', name: 'Copenhagen Airport' },
+        { code: 'ARN', city: 'Stockholm', name: 'Stockholm Arlanda Airport' },
+        { code: 'HEL', city: 'Helsinki', name: 'Helsinki-Vantaa Airport' },
+        { code: 'STN', city: 'London', name: 'London Stansted Airport' },
+        { code: 'LCY', city: 'London', name: 'London City Airport' },
+        { code: 'BHX', city: 'Birmingham', name: 'Birmingham Airport' },
+        { code: 'MAN', city: 'Manchester', name: 'Manchester Airport' },
+        { code: 'GLA', city: 'Glasgow', name: 'Glasgow International Airport' },
+        { code: 'EDI', city: 'Edinburgh', name: 'Edinburgh Airport' },
+        { code: 'DUB', city: 'Dublin', name: 'Dublin Airport' },
+        { code: 'VIE', city: 'Vienna', name: 'Vienna International Airport' },
+        { code: 'BRU', city: 'Brussels', name: 'Brussels Airport' },
+        { code: 'AMS', city: 'Amsterdam', name: 'Amsterdam Airport Schiphol' },
+        { code: 'ZRH', city: 'Zurich', name: 'Zurich Airport' },
+        { code: 'MUC', city: 'Munich', name: 'Munich Airport' },
+        { code: 'FRA', city: 'Frankfurt', name: 'Frankfurt Airport' },
+        { code: 'STO', city: 'Stockholm', name: 'Stockholm Arlanda Airport' },
+        { code: 'CAG', city: 'Cagliari', name: 'Cagliari Elmas Airport' },
+        { code: 'BLQ', city: 'Bologna', name: 'Bologna Guglielmo Marconi Airport' },
+        { code: 'NAP', city: 'Naples', name: 'Naples International Airport' },
+        { code: 'PMO', city: 'Palermo', name: 'Falcone–Borsellino Airport' },
+        { code: 'TRN', city: 'Turin', name: 'Turin Airport' },
+        { code: 'TLS', city: 'Toulouse', name: 'Toulouse–Blagnac Airport' },
+        { code: 'NCE', city: 'Nice', name: 'Nice Côte d\'Azur Airport' },
+        { code: 'LYS', city: 'Lyon', name: 'Lyon-Saint Exupéry Airport' },
+        { code: 'NCE', city: 'Nice', name: 'Nice Côte d\'Azur Airport' },
+        { code: 'LHR', city: 'London', name: 'London Heathrow Airport' },
+        { code: 'LGW', city: 'London', name: 'London Gatwick Airport' },
+    ];
+
+        const departureInput = document.getElementById('departure-search');
+        const destinationInput = document.getElementById('destination-search');
+        const departureResults = document.getElementById('departure-results');
+        const destinationResults = document.getElementById('destination-results');
+        const visaTypeSelect = document.getElementById('visa-type');
+        const countrySelect = document.getElementById('country-select');
+        const visaCostDiv = document.getElementById('visa-cost');
+        const previousVisaSelect = document.getElementById('previous-visa');
+        const previousVisaFields = document.getElementById('previous-visa-fields');
+        const schengenFields = document.getElementById('schengen-fields');
+
+        departureInput.addEventListener('input', () => filterAirports(departureInput.value, departureResults));
+        destinationInput.addEventListener('input', () => filterAirports(destinationInput.value, destinationResults));
+        countrySelect.addEventListener('change', updateVisaCost);
+        visaTypeSelect.addEventListener('change', updateVisaCost);
+        previousVisaSelect.addEventListener('change', togglePreviousVisaFields);
+        visaTypeSelect.addEventListener('change', toggleSchengenFields);
+
+        function filterAirports(query, resultsDiv) {
+            resultsDiv.innerHTML = '';
+            const filteredAirports = airports.filter(airport => 
+                airport.name.toLowerCase().includes(query.toLowerCase()) || 
+                airport.city.toLowerCase().includes(query.toLowerCase())
+            );
+
+            if (filteredAirports.length > 0) {
+                resultsDiv.style.display = 'block';
+                filteredAirports.forEach(airport => {
+                    const div = document.createElement('div');
+                    div.textContent = `${airport.name} (${airport.code}) - ${airport.city}`;
+                    div.onclick = () => {
+                        if (resultsDiv === departureResults) {
+                            departureInput.value = airport.name;
+                        } else {
+                            destinationInput.value = airport.name;
+                        }
+                        resultsDiv.style.display = 'none';
+                    };
+                    resultsDiv.appendChild(div);
+                });
+            } else {
+                resultsDiv.style.display = 'none';
+            }
+        }
+
+        function updateVisaCost() {
+            const visaType = visaTypeSelect.value;
+            if (visaType === 'tourist') {
+                visaCostDiv.textContent = 'Visa Cost: 150 USD';
+            } else if (visaType === 'business') {
+                visaCostDiv.textContent = 'Visa Cost: 150 USD';
+            } else if (visaType === 'schengen') {
+                visaCostDiv.textContent = 'Visa Cost: 80 USD';
+            } else {
+                visaCostDiv.textContent = '';
+            }
+        }
+            const searchingMessage = document.getElementById('searching-message');
+
+document.querySelector('button[type="Search"]').addEventListener('click', () => {
+    searchingMessage.style.display = 'block'; 
+    setTimeout(() => {
+        searchingMessage.style.display = 'none'; 
+    }, 2000); 
+});
+    
+
+        function togglePreviousVisaFields() {
+            if (previousVisaSelect.value === 'yes') {
+                previousVisaFields.style.display = 'block';
+            } else {
+                previousVisaFields.style.display = 'none';
+            }
+        }
+
+        function toggleSchengenFields() {
+            if (visaTypeSelect.value === 'schengen') {
+                schengenFields.style.display = 'block';
+            } else {
+                schengenFields.style.display = 'none';
+            }
+        }
+</script>
+<script>
+    const confirmationPopup = document.getElementById('confirmation-popup');
+    const overlay = document.getElementById('overlay');
+    const closePopupButton = document.getElementById('close-popup');
+
+    document.getElementById('apply-button').addEventListener('click', () => {
+        confirmationPopup.style.display = 'block';
+        overlay.style.display = 'block';
+    });
+
+    closePopupButton.addEventListener('click', () => {
+        confirmationPopup.style.display = 'none';
+        overlay.style.display = 'none';
+    });
+</script>
+<script>
+    
+var popup = document.getElementById("thank-you-popup");
+
+
+var paymentButton = document.getElementById("payment-button");
+
+
+var closeButton = document.getElementById("close-popup");
+ 
+paymentButton.onclick = function () {
+    popup.style.display = "block"; 
+}
+
+closeButton.onclick = function () {
+    popup.style.display = "none"; 
+}
+
+
+window.onclick = function (event) {
+    if (event.target == popup) {
+        popup.style.display = "none"; 
+    }
+}
+</script>
+<script>
+        
+        var modal = document.getElementById("aboutUsModal");
+
+        
+        var aboutUsLink = document.getElementById("aboutUsLink");
+
+        var closeModal = document.getElementById("closeModal");
+
+       
+        aboutUsLink.onclick = function(event) {
+            event.preventDefault(); 
+            modal.style.display = "block";
+        }
+
+       
+        closeModal.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
